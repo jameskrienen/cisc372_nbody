@@ -2,11 +2,14 @@
 #include <math.h>
 #include "vector.h"
 #include "config.h"
+#include <cuda_runtime.h>
 
 //compute: Updates the positions and locations of the objects in the system based on gravity.
 //Parameters: None
 //Returns: None
 //Side Effect: Modifies the hPos and hVel arrays with the new positions and accelerations after 1 INTERVAL
+
+
 void compute(){
 	//make an acceleration matrix which is NUMENTITIES squared in size;
 	int i,j,k;
