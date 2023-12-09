@@ -6,7 +6,7 @@
 #define NUMELEMENTS 1024
 #define BLOCK_SIZE 16
 
-__global__ void computeAccelMatrix(vector3* accels, vector3* h_pos, double* mass) {
+__global__ void computeAccelMatrix(vector3* accels, vector3* d_pos, double* d_mass) {
 	int i =  blockIdx.x * blockDim.x + threadIdx.x;
 	int j = blockIdx.y * blockDim.y + threadIdx.y;
     
@@ -20,11 +20,11 @@ __global__ void computeAccelMatrix(vector3* accels, vector3* h_pos, double* mass
 			}
         	} else {
 		
-			for (int k=0;k<3;k++) distance[k]=hPos[i][k]-hPos[j][k];
+			for (int k=0;k<3;k++) distance[k]=d_pos[i][k]-d_pos[j][k];
                 	
 			magnitude_sq=distance[0]*distance[0]+distance[1]*distance[1]+distance[2]*distance[2];
                         magnitude=sqrt(magnitude_sq);
-                        accelmag=-1*GRAV_CONSTANT*mass[j]/magnitude_sq;
+                        accelmag=-1*GRAV_CONSTANT*d_mass[j]/magnitude_sq;
 			
 			for (int k = 0; k < 3; k++) {
 
@@ -40,7 +40,7 @@ __global__ void computeAccelMatrix(vector3* accels, vector3* h_pos, double* mass
 }
 
 
-__global__ void sumAccelMat(vector3* accels, vector3* d_hVel, vector3* d_hPos) {
+__global__ void sumAccelMat(vector3* accels, vector3* d_vel, vector3* d_pos) {
     
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -52,8 +52,8 @@ __global__ void sumAccelMat(vector3* accels, vector3* d_hVel, vector3* d_hPos) {
             }
         }
         for (int k = 0; k < 3; k++){
-            hVel[i][k]+=accel_sum[k]*INTERVAL;
-            hPos[i][k]+=hVel[i][k]*INTERVAL;
+            d_vel[i][k]+=accel_sum[k]*INTERVAL;
+            d_pos[i][k]+=d_vel[i][k]*INTERVAL;
         }
     }
 }
