@@ -3,7 +3,7 @@
 
 #include "vector.h"
 
-extern *d_hPos, *d_hVel;
+extern vector3 *d_hPos, *d_hVel;
 extern double *d_mass;
 
 void compute(vector3 *d_hPos, vector3 *d_hVel, double *d_mass);
